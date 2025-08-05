@@ -2,20 +2,29 @@
   "name": "pycodeq",
   "displayName": "PyCodeQ",
   "description": "The simplest, fastest pycodestyle linter available!",
-  "version": "0.0.1",
+  "publisher": "MicrQ",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MicrQ/PyCodeQ.git"
+  },
+  "icon": "images/icon.png",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.54.0"
   },
   "categories": [
-    "Other"
+    "Linters",
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "pycodeq.helloWorld",
-        "title": "Hello World"
+        "command": "pycodeq.runCheck",
+        "title": "PyCodeQ: Run Linter Check"
       }
     ]
   },
