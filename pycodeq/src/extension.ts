@@ -1,26 +1,86 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { execFile } from 'child_process';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const diagnosticCollection = vscode.languages.createDiagnosticCollection('pycodestyle');
+
+// core function for PyCodeQ linter
+function runPycodeStyleCheck(doc: vscode.TextDocument) {
+
+	const command = 'pycodestyle';
+	const filePath = doc.fileName;
+
+	execFile(command, [filePath], (error, stdout, stderr) => {
+
+		if (error && 'code' in error && error.code === 'ENOENT') {
+			// if pycodestyle is not installed, show an error message
+			vscode.window.showErrorMessage('PyCodeQ: pycodestyle is not installed. Please install it to use this extension.');
+			return;
+
+		}
+
+		// delete previous diagnostics
+		diagnosticCollection.delete(doc.uri);
+
+		// check for errors
+		if (stderr) {
+			console.log('PyCodeQ stderr:', stderr);
+			return;
+		}
+
+		const diagnostics: vscode.Diagnostic[] = [];
+
+		// Regex to parse the output of pycodestyle
+		// path:line:column message
+		const regex = /^.+?:(\d+):(\d+): (\w\d+) (.+)/gm;
+		let match;
+
+		while ((match = regex.exec(stdout)) !== null) {
+			const line = parseInt(match[1], 10) - 1;
+			const column = parseInt(match[2], 10) - 1;
+			const code = match[3];
+			const message = match[4];
+
+			const range = new vscode.Range(line, column, line, 100);
+			const diagnostic = new vscode.Diagnostic(
+				range,
+				`${code}: ${message}`,
+				vscode.DiagnosticSeverity.Warning
+			);
+
+			diagnostics.push(diagnostic);
+		}
+
+		// updating the collection with new diagnostics
+		diagnosticCollection.set(doc.uri, diagnostics);
+	});
+}
+
+
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "pycodeq" is now active!');
+	console.log('PyCodeQ is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('pycodeq.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from PyCodeQ!');
-	});
+	// Run check when the file is saved
+	context.subscriptions.push(
+		vscode.workspace.onDidSaveTextDocument(doc => {
 
-	context.subscriptions.push(disposable);
+			// make sure the document is a Python file
+			if (doc.languageId === 'python') {
+				// run the PyCodeQ check
+				runPycodeStyleCheck(doc);
+			}
+		})
+	);
+
+	// Clear diagnostics when the file is closed
+	context.subscriptions.push(
+		vscode.workspace.onDidCloseTextDocument(doc => {
+			diagnosticCollection.delete(doc.uri);
+		})
+	);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+	console.log('PyCodeQ closed!');
+}
