@@ -60,6 +60,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 	console.log('PyCodeQ is now active!');
 
+	// Run check on manually triggered command
+	context.subscriptions.push(
+		vscode.commands.registerCommand('pycodeq.runPyCodeQ', () => {
+			const editor = vscode.window.activeTextEditor;
+
+			if (editor && editor.document.languageId === 'python') {
+				// run the PyCodeQ check
+				runPycodeStyleCheck(editor.document);
+			} else {
+				vscode.window.showErrorMessage('PyCodeQ: Please open a Python file to run the check.');
+			}
+		})
+	);
+
 	// Run check on file open
 	context.subscriptions.push(
 		vscode.workspace.onDidOpenTextDocument(doc => {
@@ -89,6 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 			diagnosticCollection.delete(doc.uri);
 		})
 	);
+
 }
 
 // This method is called when your extension is deactivated
