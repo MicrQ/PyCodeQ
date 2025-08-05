@@ -60,6 +60,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 	console.log('PyCodeQ is now active!');
 
+	// Run check on file open
+	context.subscriptions.push(
+		vscode.workspace.onDidOpenTextDocument(doc => {
+			// make sure the document is a Python file
+			if (doc.languageId === 'python') {
+				// run the PyCodeQ check
+				runPycodeStyleCheck(doc);
+			}
+		})
+	);
+
 	// Run check when the file is saved
 	context.subscriptions.push(
 		vscode.workspace.onDidSaveTextDocument(doc => {
@@ -83,4 +94,5 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
 	console.log('PyCodeQ closed!');
+	diagnosticCollection.clear();
 }
