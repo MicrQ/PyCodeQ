@@ -1,6 +1,6 @@
 # PyCodeQ
 
-![PyCodeQ Demo](images/v1.0.0.gif)
+![PyCodeQ Demo](https://raw.githubusercontent.com/MicrQ/assets/main/PyCodeQ/v1.0.0.gif)
 
 *The simplest, fastest pycodestyle linter available!*
 
