@@ -1,9 +1,8 @@
 # Change Log
 
-All notable changes to the "pycodeq" extension will be documented in this file.
+## [1.0.0] - 2025-08-06
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+- Initial public release
+- Automatic linting on save and open for Python files
+- Manual linting command (PyCodeQ: Run Linter Check)
+- Highlights style issues using pycodestyle and VS Code diagnostics

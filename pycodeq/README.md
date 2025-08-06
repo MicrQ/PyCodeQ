@@ -1,10 +1,8 @@
-<div align="center">
-    <h1>PyCodeQ</h1>
-    <i>The simplest, fastest pycodestyle linter available!</i>
-    <p align="center">
-        <img src="images/icon.png" alt="PyCodeQ Logo" width="120">
-    </p>
-</div>
+# PyCodeQ
+
+![PyCodeQ Demo](images/v1.0.0.gif)
+
+*The simplest, fastest pycodestyle linter available!*
 
 PyCodeQ is a fast, simple, and lightweight linter extension for Python in Visual Studio Code. It uses [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) to check your Python files for style issues and instantly highlights problems in your code.
 
