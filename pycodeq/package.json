@@ -8,7 +8,7 @@
     "url": "https://github.com/MicrQ/PyCodeQ.git"
   },
   "icon": "images/icon.png",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.54.0"
   },
@@ -23,10 +23,25 @@
   "contributes": {
     "commands": [
       {
-        "command": "pycodeq.runCheck",
+        "command": "pycodeq.runPyCodeQ",
         "title": "PyCodeQ: Run Linter Check"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "PyCodeQ",
+      "properties": {
+        "pycodeq.executablePath": {
+          "type": "string",
+          "default": "pycodestyle",
+          "description": "Path to the pycodestyle executable. If not set, it will assume it's installed globally."
+        },
+        "pycodeq.ignore": {
+          "type": "array",
+          "default": [],
+          "description": "List of error codes to ignore. For example, ['E501', 'E302']"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

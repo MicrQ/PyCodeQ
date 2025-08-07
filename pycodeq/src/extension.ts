@@ -6,10 +6,19 @@ const diagnosticCollection = vscode.languages.createDiagnosticCollection('pycode
 // core function for PyCodeQ linter
 function runPycodeStyleCheck(doc: vscode.TextDocument) {
 
-	const command = 'pycodestyle';
 	const filePath = doc.fileName;
+	const config = vscode.workspace.getConfiguration('pycodeq');
+	const ignoreCodes = config.get<string[]>('ignore', []);
+	const command = config.get<string>('executablePath', 'pycodestyle');
+	const args: string[] = [];
 
-	execFile(command, [filePath], (error, stdout, stderr) => {
+	// checking if there are any ignore codes to ignore
+	if (ignoreCodes.length > 0) {
+		args.push(`--ignore=${ignoreCodes.join(',')}`);
+	}
+	args.push(filePath);
+
+	execFile(command, args, (error, stdout, stderr) => {
 
 		if (error && 'code' in error && error.code === 'ENOENT') {
 			// if pycodestyle is not installed, show an error message
