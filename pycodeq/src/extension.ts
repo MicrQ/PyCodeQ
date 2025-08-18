@@ -3,6 +3,29 @@ import { execFile } from 'child_process';
 
 const diagnosticCollection = vscode.languages.createDiagnosticCollection('pycodestyle');
 
+// Auto-fix with autopep8 functionality
+function runAutoFix(doc: vscode.TextDocument, onComplete: () => void) {
+	const filePath = doc.fileName;
+	const config = vscode.workspace.getConfiguration('pycodeq');
+	const command = config.get<string>('autopep8ExecutablePath', 'autopep8');
+
+	// Using the --in-place flag to modify the file directly
+	const args = ['--in-place', filePath];
+
+	execFile(command, args, (error, stdout, stderr) => {
+		if (error && 'code' in error && error.code === 'ENOENT') {
+			vscode.window.showWarningMessage('PyCodeQ: autopep8 is not installed. Auto-fixing failed.')
+		} else if (error) {
+			console.error('PyCodeQ Auto-Fix Error:', error.message);
+			vscode.window.showWarningMessage('PyCodeQ: Failed to run autopep8. See console for details.')
+		}
+
+		// Re-running PyCodeQ linter to display violations that can't be auto-fixed
+		onComplete();
+	});
+}
+
+
 // core function for PyCodeQ linter
 function runPycodeStyleCheck(doc: vscode.TextDocument) {
 
@@ -100,8 +123,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// make sure the document is a Python file
 			if (doc.languageId === 'python') {
-				// run the PyCodeQ check
-				runPycodeStyleCheck(doc);
+				// run the PyCodeQ check or PyCodeQ auto-fix
+				const config = vscode.workspace.getConfiguration('pycodeq');
+				const isAutoFixEnabled = config.get<boolean>('autoFixOnSave', false);
+
+				if (isAutoFixEnabled) {
+					// run auto-fix and then the PyCodeQ check
+					runAutoFix(doc, () => runPycodeStyleCheck(doc));
+				} else {
+					// run the PyCodeQ check and display diagnostics
+					runPycodeStyleCheck(doc);
+				}
 			}
 		})
 	);
