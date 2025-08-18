@@ -8,7 +8,7 @@
     "url": "https://github.com/MicrQ/PyCodeQ.git"
   },
   "icon": "images/icon.png",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.54.0"
   },
@@ -34,6 +34,16 @@
           "type": "string",
           "default": "pycodestyle",
           "description": "Path to the pycodestyle executable. If not set, it will assume it's installed globally."
+        },
+        "pycodeq.autopep8ExecutablePath":{
+          "type": "string",
+          "default": "autopep8",
+          "description": "Path to the autopep8 executable. If not set, it will assume it's installed globally."
+        },
+        "pycodeq.autoFixOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable auto-fixing of code style issues on save."
         },
         "pycodeq.ignore": {
           "type": "array",

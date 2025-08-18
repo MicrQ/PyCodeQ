@@ -13,13 +13,17 @@ function runAutoFix(doc: vscode.TextDocument, onComplete: () => void) {
 	const args = ['--in-place', filePath];
 
 	execFile(command, args, (error, stdout, stderr) => {
-		if (error && 'code' in error && error.code === 'ENOENT') {
-			vscode.window.showWarningMessage('PyCodeQ: autopep8 is not installed. Auto-fixing failed.')
-		} else if (error) {
-			console.error('PyCodeQ Auto-Fix Error:', error.message);
-			vscode.window.showWarningMessage('PyCodeQ: Failed to run autopep8. See console for details.')
-		}
+		if (error) {
 
+			if ((error as any).code === 'ENOENT') {
+				vscode.window.showErrorMessage(
+					`PyCodeQ: autopep8 is not installed. ${command} not found.`);
+			} else {
+				console.error('PyCodeQ Auto-Fix Error:', error.message);
+				vscode.window.showErrorMessage('PyCodeQ: Failed to run autopep8. See console for details.');
+			}
+			
+		}
 		// Re-running PyCodeQ linter to display violations that can't be auto-fixed
 		onComplete();
 	});

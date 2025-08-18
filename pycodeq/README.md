@@ -33,6 +33,10 @@ Install with:
 ```bash
 pip install pycodestyle
 ```
+- (Optional): If you want to use auto-fix on open/save, install:
+```bash
+pip install autopep8
+```
 
 ## Usage
 
@@ -41,11 +45,36 @@ pip install pycodestyle
 3. Style issues will be highlighted in the editor and listed in the Problems panel.
 4. (Optional) Configure the path to `pycodestyle` or ignore error codes in the extension settings.
 
+## Auto-fix (optional)
+
+PyCodeQ can optionally run an external fixer to automatically correct style violations when a file is opened or closed. This behavior is off by default.
+
+- To enable auto-fix on save, set `pycodeq.autoFixOnSave` to `true` in your settings.
+- By default PyCodeQ uses `autopep8` with the `--in-place` option. You can change the path to the `autopep8` executable using `pycodeq.autopep8ExecutablePath`.
+- If the fixer isn't available, PyCodeQ will show a notification and still run the linter so diagnostics are displayed.
+
+Example settings:
+
+```json
+{
+  "pycodeq.autoFixOnSave": true,
+  "pycodeq.autopep8ExecutablePath": "autopep8"
+}
+```
+
+## Auto-fix demo
+![Auto Fix demo](https://raw.githubusercontent.com/MicrQ/assets/main/PyCodeQ/v1.2.0_autofix.gif)
+
+
 ## Known Issues
 
 - Only supports linting with `pycodestyle` found in your system PATH or specified path
 
 ## Release Notes
+
+### 1.2.0
+- Optional auto-fix feature on file save; configurable and disabled by default
+- Add settings to configure auto-fix command and arguments
 
 ### 1.1.0
 - Added support for configuring a custom path to the `pycodestyle` executable

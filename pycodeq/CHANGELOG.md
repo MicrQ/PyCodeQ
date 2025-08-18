@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.2.0] - 2025-08-18
+
+- Optional auto-fix feature on file open and close (configurable and disabled by default) via `autopep8`
+- Users can configure the auto-fix command and arguments
+
 ## [1.1.0] - 2025-08-08
 
 - Added support for configuring a custom path to the `pycodestyle` executable
